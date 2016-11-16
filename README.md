@@ -1,5 +1,5 @@
 Simple data viewer
 ------------------
 ```julia
- include(Pkg.dir("DataViewer", "src","example.jl"))
+ include(Pkg.dir("DataViewer", "src","examples.jl"))
 ```
