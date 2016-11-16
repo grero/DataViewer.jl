@@ -2,15 +2,11 @@ module DataViewer
 using Colors
 using GLVisualize, Reactive, GLAbstraction, GeometryTypes, GLFW
 
-function transmat(x, pressed)
-    c = !isempty(pressed)
-		if c
-			return translationmatrix(Vec3f0(x, 0)) * scalematrix(Vec3f0(0.7))
-		else
-			return scalematrix(Vec3f0(1.0))
-		end
-end
+"""
+Plot `data`. Zoom the horizontal axis by dragging the mouse, pan horizontal by scrolling and reset the view by clicking once anywhere on the plot.
 
+	function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,1,length(data)))
+"""
 function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,1,length(data)))
 	points = Array(Point2f0, length(data))
 	window = glscreen("DataViewer", resolution=(1024,800))
