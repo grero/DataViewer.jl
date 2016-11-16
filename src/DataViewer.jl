@@ -40,6 +40,7 @@ function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,
 		s
 	end
 
+	#TODO: This part doesn't really work
 	selection_rectangle = map(mouse_buttons_pressed) do button
 		ΔX = abs(value(mouseposition)[1] - value(start_position)[1])
 		ΔY = float(h)
@@ -51,6 +52,7 @@ function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,
 		S = SimpleRectangle(x, 20.0, ΔX, ΔY)
 		S
 	end
+	#
 
 	new_model = map(pan,end_position) do _pan,_pos
 		t = translationmatrix(Vec3f0(_pan[1], 0.0, 0.0))
@@ -59,7 +61,9 @@ function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,
 	end
 
 	_view(visualize(points, :lines, color=RGBA(0.0, 0.0, 0.0, 1.0),model=new_model), window)
+	#TODO: This doesn't work
 	_view(visualize(value(selection_rectangle), model=end_position), window)
+	#
 	renderloop(window)
 end
 
