@@ -35,7 +35,7 @@ function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,
 			t = scalematrix(Vec3f0(h/ΔX,1.0, 1.0))
 			s = s*t
 		else
-			push!(pan, Vec2f0(0.0))
+			push!(scroll, -value(pan)) #hackish way of reseting the pan signal
 		end
 		s
 	end
