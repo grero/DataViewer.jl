@@ -37,6 +37,8 @@ function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,
 	#xytranslate   = GLAbstraction.dragged(mouseposition, left_pressed, true)
 	#start_position = filterwhen(left_down, Vec2f0(0.0), mouseposition)
 	#end_position = filterwhen(left_released, Vec2f0(0.0), mouseposition)
+	fscroll = droprepeats(map(Vec2f0, scroll))
+	pan = foldp(+, Vec2f0(0.0),  fscroll)
 
 	start_position = map(mouse_button_down) do button
 		value(mouseposition)
@@ -48,9 +50,12 @@ function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,
 			s = translationmatrix(-Vec3f0(value(start_position)[1],0.0, 0.0))
 			t = scalematrix(Vec3f0(h/ΔX,1.0, 1.0))
 			s = s*t
+		else
+			push!(pan, Vec2f0(0.0))
 		end
 		s
 	end
+
 	selection_rectangle = map(mouse_buttons_pressed) do button
 		ΔX = abs(value(mouseposition)[1] - value(start_position)[1])
 		ΔY = float(h)
@@ -60,12 +65,9 @@ function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,
 			x = value(mouseposition)[1]
 		end
 		S = SimpleRectangle(x, 20.0, ΔX, ΔY)
-		#println(S)
 		S
 	end
 
-	fscroll = droprepeats(map(Vec2f0, scroll))
-	pan = foldp(+, Vec2f0(0.0),  fscroll)
 	new_model = map(pan,end_position) do _pan,_pos
 		t = translationmatrix(Vec3f0(_pan[1], 0.0, 0.0))
 		s = value(_pos)*t
