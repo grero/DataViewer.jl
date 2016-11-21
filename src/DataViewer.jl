@@ -83,8 +83,15 @@ function register_drag_zoom(cam, screen, key = GLFW.MOUSE_BUTTON_LEFT)
     _view(rect_vis, screen, camera = cam)
     preserve(foldp(first(value(dragged_rect)), dragged_rect) do v0, d_r
 						 if !d_r[1] && v0 # just switched from dragged to no dragg
-							 if d_r[2].w>0.0 
-								 center!(cam, AABB{Float32}(d_r[2]))
+							 if abs(d_r[2].w)>0.0 
+							 		rect = d_r[2]
+							 		if rect.w < 0.0
+										rect = Rect(rect.x+rect.w, rect.y, -rect.w, rect.h)
+									end
+									if rect.h < 0.0
+										rect = Rect(rect.x, rect.y + rect.h, rect.w, -rect.h)
+									end
+								 center!(cam, AABB{Float32}(rect))
 							 else
 								 center!(cam, AABB{Float32}(value(screen.area))) #reset to original camera
 							 end
