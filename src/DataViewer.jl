@@ -31,8 +31,8 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 		ΔX = value(mouseposition)[1] - value(start_position)[1]
 		s = scalematrix(Vec3f0(1.0))
 		if ΔX > 0
-			s = translationmatrix(-Vec3f0(value(start_position)[1],0.0, 0.0))
-			t = scalematrix(Vec3f0(h/ΔX,1.0, 1.0))
+			t = translationmatrix(-Vec3f0(value(start_position)[1],0.0, 0.0))
+			s = scalematrix(Vec3f0(h/ΔX,1.0, 1.0))
 			s = s*t
 		else
 			push!(scroll, -value(pan)) #hackish way of reseting the pan signal
