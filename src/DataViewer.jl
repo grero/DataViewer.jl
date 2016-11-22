@@ -40,30 +40,23 @@ function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,
 		s
 	end
 
-	#TODO: This part doesn't really work
-	selection_rectangle = map(mouse_buttons_pressed) do button
-		ΔX = abs(value(mouseposition)[1] - value(start_position)[1])
-		ΔY = float(h)
-		if value(mouseposition)[1] > value(start_position)[1]
-			x = value(start_position)[1]
+	#keep track of scaling
+	current_scale = foldp(scalematrix(Vec3f0(1.0)), end_position) do v0, v1
+		if v1[1,1] == 1.0
+			vnew = v1
 		else
-			x = value(mouseposition)[1]
+			vnew = v1*v0
 		end
-		S = SimpleRectangle(x, 20.0, ΔX, ΔY)
-		S
+		vnew
 	end
-	#
 
-	new_model = map(pan,end_position) do _pan,_pos
+	new_model = map(pan,current_scale) do _pan,_pos
 		t = translationmatrix(Vec3f0(_pan[1], 0.0, 0.0))
 		s = value(_pos)*t
 		s
 	end
 
 	_view(visualize(points, :lines, color=RGBA(0.0, 0.0, 0.0, 1.0),model=new_model), window)
-	#TODO: This doesn't work
-	_view(visualize(value(selection_rectangle), model=end_position), window)
-	#
 	renderloop(window)
 end
 
