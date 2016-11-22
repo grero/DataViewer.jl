@@ -7,7 +7,7 @@ Plot `data`. Zoom the horizontal axis by dragging the mouse, pan horizontal by s
 
 	function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,1,length(data)))
 """
-function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,1,length(data)))
+function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace(0,1,length(data)))
 	window = glscreen("DataViewer", resolution=(1024,800))
 	res = widths(window)
 	h = res[2]-40 #ymargins
