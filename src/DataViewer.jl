@@ -11,6 +11,7 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 	window = glscreen("DataViewer", resolution=(1024,800))
 	res = widths(window)
 	h = res[2]-40 #ymargins
+	w = res[1]-20 #xmargin
 	mi,mx = extrema(data)
 	Δx = mx-mi
 	Δt = (res[1]-20)/length(data)
@@ -29,10 +30,11 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 	end
 	end_position = map(mouse_button_released) do button
 		ΔX = value(mouseposition)[1] - value(start_position)[1]
+		ΔY = value(mouseposition)[2] - value(start_position)[2]
 		s = scalematrix(Vec3f0(1.0))
 		if ΔX > 0
-			t = translationmatrix(-Vec3f0(value(start_position)[1],0.0, 0.0))
-			s = scalematrix(Vec3f0(h/ΔX,1.0, 1.0))
+			t = translationmatrix(-Vec3f0(value(start_position)[1],value(mouseposition)[2], 0.0))
+			s = scalematrix(Vec3f0(w/abs(ΔX),h/abs(ΔY), 1.0))
 			s = s*t
 		else
 			push!(scroll, -value(pan)) #hackish way of reseting the pan signal
