@@ -98,7 +98,9 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 		if !isempty(_text)
 			tt = translationmatrix(Vec3f0(value(_pos)[1], value(_pos)[2], 0.0))
 			tt = mm*tt
-			tt = translationmatrix(Vec3f0(tt[1,4], tt[2,4], 0.0))
+			#extract the translation part only, as we do not want to scale the text
+			#offset by 10px in the original coordinate system; probably a better way to do this
+			tt = translationmatrix(Vec3f0(tt[1,4]+20.0/mm[1,1], tt[2,4]+20.0/mm[2,2], 0.0))
 		else
 			tt = translationmatrix(Vec3f0(0.0))
 		end
