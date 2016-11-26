@@ -91,14 +91,11 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 		_text
 	end
 
-	_text_scale = scalematrix(Vec3f0(10.0, 10.0, 1.0))
-	cursor_pos = map(cursor) do vv 
+	_text_scale = scalematrix(Vec3f0(5.0, 5.0, 1.0))
+	cursor_pos = map(cursor,new_model) do vv,mm
 		_text, _pos = vv
-		ss = scalematrix(Vec3f0(10.0, 10.0, 1.0))
+		ss = _text_scale
 		if !isempty(_text)
-			_text_trans = translationmatrix(Vec3f0(value(_pos)[1], value(_pos)[2], 0.0))
-			tt = _text_trans*_text_scale
-			mm = value(new_model)
 			tt = translationmatrix(Vec3f0(value(_pos)[1], value(_pos)[2], 0.0))
 			tt = mm*tt
 			tt = translationmatrix(Vec3f0(tt[1,4], tt[2,4], 0.0))
