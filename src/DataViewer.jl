@@ -16,8 +16,9 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 	Δx = mx-mi
 	Δt = (res[1]-20)/length(data)
 
-	points = Array(Point2f0, length(data))
-	for i in 1:length(data)
+	npoints = length(data)
+	points = Array(Point2f0, npoints)
+	for i in 1:npoints
 		points[i] = Point2f0(10.0 + (i-1)*Δt, h*(data[i]-mi)/Δx + 20)
 	end
 	@materialize mouseposition, mouse_buttons_pressed,mouse_button_down, mouse_button_released,scroll = window.inputs
