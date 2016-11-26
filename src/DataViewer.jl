@@ -3,7 +3,7 @@ using Colors
 using GLVisualize, Reactive, GLAbstraction, GeometryTypes, GLFW
 
 """
-Plot `data`. Zoom the horizontal axis by dragging the mouse, pan horizontal by scrolling and reset the view by clicking once anywhere on the plot.
+Plot `data`. Zoom by dragging the mouse, pan horizontally by scrolling and reset the view by clicking once anywhere on the plot. Right click to display a data cursor at that point, which can be moved using the arrow keys. Right click away from the line to turn off cursor.
 
 	function viewdata(data::Array{Float64,1},t::AbstractArray{Float64,1}=linspace(0,1,length(data)))
 """
