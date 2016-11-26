@@ -73,7 +73,7 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 		idx,_value = value(GLVisualize.mouse2id(window))
 		oncurve = false
 		if idx == ids
-			rpos = (points[_value][1], points[_value][2])
+			rpos = (points[_value-1][1], points[_value-1][2])
 			pos = ((rpos[1]-10)/Δt, (rpos[2]+20)*Δx/h+mi)
 			xpos = @sprintf "%.3f" pos[1]
 			ypos = @sprintf "%.3f" pos[2]
