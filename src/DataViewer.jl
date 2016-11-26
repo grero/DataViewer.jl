@@ -69,10 +69,19 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 	is_same_id(id,ids) = id == ids
 	isoverpoint = droprepeats(const_lift(is_same_id, m2id, ids))
 
-	cursor = map(right_released) do overpoint
+	selected_point = map(right_released) do overpoint
 		_m2id = value(GLVisualize.mouse2id(window))
 		idx,_value = value(GLVisualize.mouse2id(window))
+		pidx = -1
 		if idx == ids
+			pidx = _value
+		end
+		pidx
+	end
+
+	cursor = map(selected_point) do pidx
+		if 1 < pidx <= npoints 
+			_value = pidx
 			#get the point in the data array, i.e. in pixel values
 			rpos = (points[_value-1][1], points[_value-1][2])
 			#convert back to data point 
