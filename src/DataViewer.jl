@@ -114,7 +114,7 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 	_view(_vpoints, window)
 	#TODO: Make the scale conform to some sensitible font size
 	_view(visualize(cursor_text, model=cursor_pos), window)
-	_view(visualize(cursor_point, model=new_model), window)
+	_view(visualize((Circle, cursor_point), model=new_model,scale=Vec3f0(20.0)), window)
 	renderloop(window)
 end
 
