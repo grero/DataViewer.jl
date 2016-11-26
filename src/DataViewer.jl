@@ -71,9 +71,10 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 	cursor = map(right_released) do overpoint
 		_m2id = value(GLVisualize.mouse2id(window))
 		idx,_value = value(GLVisualize.mouse2id(window))
-		oncurve = false
 		if idx == ids
+			#get the point in the data array, i.e. in pixel values
 			rpos = (points[_value-1][1], points[_value-1][2])
+			#convert back to data point 
 			pos = ((rpos[1]-10)/Δt, (rpos[2]+20)*Δx/h+mi)
 			xpos = @sprintf "%.3f" pos[1]
 			ypos = @sprintf "%.3f" pos[2]
