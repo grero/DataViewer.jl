@@ -121,6 +121,17 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 		_text,_pos = vv
 		[Point2f0(_pos[1], _pos[2])]
 	end
+	
+	#allow arrow keys to move the cursor
+	arrows = sampleon(every(0.1), window.inputs[:arrow_navigation])
+	preserve(map(arrows) do direction	
+					if direction == :right
+						push!(selected_point, value(selected_point)+1)
+					elseif direction == :left
+						push!(selected_point, value(selected_point)-1)
+					end
+					end)
+
 
 	#isoverpoint = const_lift(is_same_id, m2id, ids)
 	_view(_vpoints, window)
