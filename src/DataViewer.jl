@@ -78,7 +78,7 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 			pos = ((rpos[1]-10)/Δt, (rpos[2]+20)*Δx/h+mi)
 			xpos = @sprintf "%.3f" pos[1]
 			ypos = @sprintf "%.3f" pos[2]
-			_text = "$(xpos), $(ypos)"
+			_text = "($(xpos), $(ypos))"
 		else
 			_text = "NAN"
 			rpos = (-100.0, -100.0)
