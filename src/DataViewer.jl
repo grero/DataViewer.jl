@@ -21,17 +21,22 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 		points[i] = Point2f0(10.0 + (i-1)*Δt, h*(data[i]-mi)/Δx + 20)
 	end
 	@materialize mouseposition, mouse_buttons_pressed,mouse_button_down, mouse_button_released,scroll = window.inputs
-
 	fscroll = droprepeats(map(Vec2f0, scroll))
 	pan = foldp(+, Vec2f0(0.0),  fscroll)
+
+	m2id = GLVisualize.mouse2id(window)
 
 	start_position = map(mouse_button_down) do button
 		value(mouseposition)
 	end
-	end_position = map(mouse_button_released) do button
+	left_released = filter(button->button == GLFW.MOUSE_BUTTON_LEFT, GLFW.MOUSE_BUTTON_LEFT, mouse_button_released)
+	right_released = filter(button->button == GLFW.MOUSE_BUTTON_RIGHT, GLFW.MOUSE_BUTTON_RIGHT, mouse_button_released)
+
+
+	end_position = map(left_released) do button
+		s = scalematrix(Vec3f0(1.0))
 		ΔX = value(mouseposition)[1] - value(start_position)[1]
 		ΔY = value(mouseposition)[2] - value(start_position)[2]
-		s = scalematrix(Vec3f0(1.0))
 		if ΔX > 0
 			t = translationmatrix(-Vec3f0(value(start_position)[1],value(mouseposition)[2], 0.0))
 			s = scalematrix(Vec3f0(w/abs(ΔX),h/abs(ΔY), 1.0))
@@ -58,7 +63,60 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 		s
 	end
 
-	_view(visualize(points, :lines, color=RGBA(0.0, 0.0, 0.0, 1.0),model=new_model), window)
+	_vpoints = visualize(points, :lines, color=RGBA(0.0, 0.0, 0.0, 1.0),model=new_model)
+	ids = _vpoints.children[].id
+	is_same_id(id,ids) = id == ids
+	isoverpoint = droprepeats(const_lift(is_same_id, m2id, ids))
+
+	cursor = map(right_released) do overpoint
+		_m2id = value(GLVisualize.mouse2id(window))
+		idx,_value = value(GLVisualize.mouse2id(window))
+		oncurve = false
+		if idx == ids
+			rpos = (points[_value][1], points[_value][2])
+			pos = ((rpos[1]-10)/Δt, (rpos[2]+20)*Δx/h+mi)
+			xpos = @sprintf "%.3f" pos[1]
+			ypos = @sprintf "%.3f" pos[2]
+			_text = "$(xpos), $(ypos)"
+		else
+			_text = "NAN"
+			rpos = (-100.0, -100.0)
+		end
+		_text, rpos
+	end
+
+	cursor_text = map(cursor) do vv
+		_text, _pos = vv
+		_text
+	end
+
+	_text_scale = scalematrix(Vec3f0(10.0, 10.0, 1.0))
+	cursor_pos = map(cursor) do vv 
+		_text, _pos = vv
+		ss = scalematrix(Vec3f0(10.0, 10.0, 1.0))
+		if !isempty(_text)
+			_text_trans = translationmatrix(Vec3f0(value(_pos)[1], value(_pos)[2], 0.0))
+			tt = _text_trans*_text_scale
+			mm = value(new_model)
+			tt = translationmatrix(Vec3f0(value(_pos)[1], value(_pos)[2], 0.0))
+			tt = mm*tt
+			tt = translationmatrix(Vec3f0(tt[1,4], tt[2,4], 0.0))
+		else
+			tt = translationmatrix(Vec3f0(0.0))
+		end
+		tt*ss
+	end
+
+	cursor_point = map(cursor) do vv
+		_text,_pos = vv
+		[Point2f0(_pos[1], _pos[2])]
+	end
+
+	#isoverpoint = const_lift(is_same_id, m2id, ids)
+	_view(_vpoints, window)
+	#TODO: Make the scale conform to some sensitible font size
+	_view(visualize(cursor_text, model=cursor_pos), window)
+	_view(visualize(cursor_point, model=new_model), window)
 	renderloop(window)
 end
 
