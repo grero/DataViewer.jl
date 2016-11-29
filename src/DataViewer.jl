@@ -71,9 +71,26 @@ function viewdata{T<:Real}(data::Array{T,1},t::AbstractArray{Float64,1}=linspace
 
 	selected_point = map(right_released) do overpoint
 		idx,_value = value(GLVisualize.mouse2id(window))
-		pidx = -1
-		if idx == ids
-			pidx = _value
+		if _value == typemax(UInt16)
+			#not a valid selection; do it the hard way
+			mm = value(new_model)
+			x,y = value(mouseposition)
+			#transform from pixel to data (mm goes from data to pixel, so we need to invert mm)
+			mmi = inv(mm)
+			vvi = mmi*Vec4f0(x,y,0.0, 1.0)
+			xxi = (vvi[1]-10)/Δt
+			yy = (vvi[2]-20)*Δx/h + mi
+			xidx = searchsortedfirst(1:npoints, xxi)
+			if xidx > 0
+				pidx = xidx
+			else
+				pidx = -1
+			end
+		else
+			pidx = -1
+			if idx == ids
+				pidx = _value
+			end
 		end
 		pidx
 	end
